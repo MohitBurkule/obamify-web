@@ -7,12 +7,28 @@ This is a React/TypeScript port of the Obamify image transformation application.
 **Code authored by GLM (GLM 4.7)**
 - Email: noreply@z.ai
 
+## Branches
+
+- **main** - Stable CPU-based rendering (Canvas 2D)
+- **webgl-optimization** - GPU-accelerated rendering (WebGL/WebGPU)
+
 ## Development
 
-### Installation
+### Clone and Setup
 
 ```bash
+# Clone the repository
+git clone https://github.com/MohitBurkule/obamify-web.git
+cd obamify-web
+
+# Install dependencies
 npm install
+
+# For WebGL-optimized version (faster performance)
+git checkout webgl-optimization
+
+# For stable CPU-based version
+git checkout main
 ```
 
 ### Run Development Server
@@ -30,6 +46,13 @@ npm run build
 ```
 
 The built files will be in the `dist` directory.
+
+### Local Development (Faster)
+
+For faster development without using git:
+- Work directly in the web folder
+- Changes sync automatically in the browser
+- Use `webgl-optimization` branch for GPU rendering
 
 ## Tech Stack
 
