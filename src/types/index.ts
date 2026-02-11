@@ -34,10 +34,12 @@ export interface UnprocessedPreset {
   sourceImg: Uint8Array; // RGB pixel data
 }
 
-export enum Algorithm {
-  Optimal = 'optimal',
-  Genetic = 'genetic',
-}
+export const Algorithm = {
+  Optimal: 'optimal',
+  Genetic: 'genetic',
+} as const;
+
+export type Algorithm = (typeof Algorithm)[keyof typeof Algorithm];
 
 export enum ProgressMsgType {
   Progress = 'progress',

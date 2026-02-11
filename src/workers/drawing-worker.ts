@@ -1,7 +1,7 @@
 // Real-time drawing mode worker
 // Matches Rust: src/app/calculate/drawing_process.rs
 
-import type { UnprocessedPreset, GenerationSettings, ProgressMsg, ProgressMsgType, SeedColor } from '../types';
+import type { UnprocessedPreset, GenerationSettings, ProgressMsgType, SeedColor } from '../types';
 import { heuristic, SeededRNG } from '../utils/math';
 import { extractRGB, applyCropScale } from '../utils/image';
 
@@ -11,7 +11,6 @@ interface DrawingWorkerMessage {
   settings: GenerationSettings;
   colors: SeedColor[];
   pixelData: Array<{ strokeId: number; lastEdited: number }>;
-  frameCount: number;
   currentId: number;
   myId: number;
 }
@@ -24,7 +23,6 @@ function strokeReward(
   oldPos: number,
   pixelData: Array<{ strokeId: number; lastEdited: number }>,
   pixels: Array<{ srcX: number; srcY: number; h: number }>,
-  frameCount: number,
 ): number {
   const x = (newPos % DRAWING_CANVAS_SIZE);
   const y = Math.floor(newPos / DRAWING_CANVAS_SIZE);
@@ -62,11 +60,11 @@ function maxDist(age: number): number {
   return Math.round(((DRAWING_CANVAS_SIZE / 4) * Math.pow(0.99, age / 30)));
 }
 
-self.onmessage = (e: MessageEvent<DrawingWorkerMessage>) => {
+self.onmessage = async (e: MessageEvent<DrawingWorkerMessage>) => {
   const msg = e.data;
 
   if (msg.type === 'process') {
-    const { source, settings, colors, pixelData, frameCount, myId } = msg;
+    const { source, settings, colors, pixelData, myId } = msg;
 
     const sourceImg = applyCropScale(
       source.sourceImg,
@@ -131,7 +129,7 @@ self.onmessage = (e: MessageEvent<DrawingWorkerMessage>) => {
         const ax = apos % settings.sidelen;
         const ay = Math.floor(apos / settings.sidelen);
 
-        const maxDistA = maxDist(frameCount - (pixelData[apos]?.lastEdited ?? 0));
+        const maxDistA = maxDist(0 - (pixelData[apos]?.lastEdited ?? 0));
 
         const bx = Math.floor(
           Math.min(
@@ -147,7 +145,7 @@ self.onmessage = (e: MessageEvent<DrawingWorkerMessage>) => {
         );
         const bpos = by * settings.sidelen + bx;
 
-        const maxDistB = maxDist(frameCount - (pixelData[bpos]?.lastEdited ?? 0));
+        const maxDistB = maxDist(0 - (pixelData[bpos]?.lastEdited ?? 0));
 
         if (
           Math.abs(bx - ax) > maxDistB ||
@@ -161,19 +159,21 @@ self.onmessage = (e: MessageEvent<DrawingWorkerMessage>) => {
 
         const aOnBH = heuristic(
           { x: bx, y: by },
+          { x: ax, y: ay },
           [Math.floor(colors[apos].rgba[0] * 256), Math.floor(colors[apos].rgba[1] * 256), Math.floor(colors[apos].rgba[2] * 256)],
           tB,
           weights[bpos],
           settings.proximityImportance,
-        ) + strokeReward(bpos, apos, pixelData, pixels, frameCount);
+        ) + strokeReward(bpos, apos, pixelData, pixels);
 
         const bOnAH = heuristic(
           { x: ax, y: ay },
+          { x: bx, y: by },
           [Math.floor(colors[bpos].rgba[0] * 256), Math.floor(colors[bpos].rgba[1] * 256), Math.floor(colors[bpos].rgba[2] * 256)],
           tA,
           weights[apos],
           settings.proximityImportance,
-        ) + strokeReward(apos, bpos, pixelData, pixels, frameCount);
+        ) + strokeReward(apos, bpos, pixelData, pixels);
 
         const improvementA = pixels[apos].h - bOnAH;
         const improvementB = pixels[bpos].h - aOnBH;
@@ -199,7 +199,7 @@ self.onmessage = (e: MessageEvent<DrawingWorkerMessage>) => {
 
       // Small delay to prevent UI blocking
       if (loopCount % 10 === 0) {
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await new Promise<void>((resolve) => setTimeout(resolve, 0));
       }
     }
   }

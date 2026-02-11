@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import type { GenerationSettings, Algorithm, CropScale, UnprocessedPreset } from '../types';
+import type { GenerationSettings, CropScale, UnprocessedPreset } from '../types';
+import { Algorithm } from '../types';
 
 interface ConfigModalProps {
   isOpen: boolean;

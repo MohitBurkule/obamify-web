@@ -17,7 +17,7 @@ const MainCanvas = forwardRef<HTMLCanvasElement, MainCanvasProps>(
     const internalRef = useRef<HTMLCanvasElement | null>(null);
 
     // Expose ref to parent
-    useImperativeHandle(ref, () => internalRef.current);
+    useImperativeHandle<HTMLCanvasElement | null, HTMLCanvasElement | null>(ref, () => internalRef.current);
 
   useEffect(() => {
     const canvas = internalRef.current;

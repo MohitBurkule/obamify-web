@@ -22,6 +22,8 @@ import { renderVoronoiOptimized } from './rendering/voronoi';
 // Worker type for algorithms
 interface AlgorithmWorker {
   postMessage: (message: any, transfer?: any[]) => void;
+  terminate: () => void;
+  onmessage: ((e: MessageEvent<any>) => void) | null;
 }
 
 // Canvas component with ref forwarding
@@ -39,7 +41,7 @@ const MainCanvas = forwardRef<HTMLCanvasElement, MainCanvasProps>(
     const internalRef = useRef<HTMLCanvasElement | null>(null);
 
     // Expose ref to parent
-    useImperativeHandle(ref, () => internalRef.current);
+    useImperativeHandle<HTMLCanvasElement | null, HTMLCanvasElement | null>(ref, () => internalRef.current);
 
     useEffect(() => {
       const canvas = internalRef.current;
@@ -90,7 +92,6 @@ function App() {
 
   // Workers
   const algorithmWorkerRef = useRef<AlgorithmWorker | null>(null);
-  const drawingWorkerRef = useRef<Worker | null>(null);
 
   // GIF recording
   const { isRecording, startRecording, captureFrame, finishRecording } = useGifRecorder();
@@ -259,7 +260,6 @@ function App() {
             const imageData = new ImageData(
               new Uint8ClampedArray(
                 msg.data.flatMap((rgb, i) => {
-                  const pixelIdx = Math.floor(i / 3);
                   if (i % 3 === 0) return [rgb, 0, 0, 0]; // R
                   if (i % 3 === 1) return [0, rgb, 0, 0]; // G
                   return [0, 0, rgb, 0]; // B

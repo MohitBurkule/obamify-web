@@ -2,7 +2,7 @@ import type { UnprocessedPreset, CropScale } from '../types';
 import { clamp } from './math';
 
 // Extract RGB pixels from image data
-export function extractRGB(data: Uint8Array, width: number, height: number): [number, number, number][] {
+export function extractRGB(data: Uint8Array, _width: number, _height: number): [number, number, number][] {
   const pixels: [number, number, number][] = [];
   for (let i = 0; i < data.length; i += 3) {
     pixels.push([data[i], data[i + 1], data[i + 2]]);

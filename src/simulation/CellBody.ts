@@ -6,7 +6,6 @@ import { clamp } from '../utils/math';
 
 const PERSONAL_SPACE = 0.95;
 const MAX_VELOCITY = 6.0;
-const ALIGNMENT_FACTOR = 0.8;
 
 function factorCurve(x: number): number {
   return Math.min(1000.0, x ** 3);
@@ -115,8 +114,9 @@ export class CellBody {
   }
 
   applyStrokeAttraction(pos: SeedPos, otherCell: SeedPos, weight: number): void {
-    this.accx += (otherCell.xy[0] - pos.xy[0]) * weight * 0.8;
-    this.accy += (otherCell.xy[1] - pos.xy[1]) * weight * 0.8;
+    const ALIGNMENT_FACTOR = 0.8;
+    this.accx += (otherCell.xy[0] - pos.xy[0]) * weight * ALIGNMENT_FACTOR;
+    this.accy += (otherCell.xy[1] - pos.xy[1]) * weight * ALIGNMENT_FACTOR;
   }
 
   private posToBits(x: number): number {

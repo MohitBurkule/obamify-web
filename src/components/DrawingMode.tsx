@@ -77,7 +77,6 @@ export function DrawingMode({
   };
 
   const handleDraw = (pos: { x: number; y: number }) => {
-    const pixelSize = width / Math.sqrt(seeds.length);
     const brushSize = selectedColor === 4 ? 30 : 50; // Eraser is smaller
     const transition = 10;
     const color = DRAWING_COLORS[selectedColor];

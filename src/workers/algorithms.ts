@@ -4,7 +4,6 @@
 import type {
   UnprocessedPreset,
   GenerationSettings,
-  Algorithm,
   ProgressMsg,
   ProgressMsgType,
 } from '../types';
@@ -128,6 +127,7 @@ function processGenetic(
 
       const aOnBH = heuristic(
         { x: bx, y: by },
+        { x: ax, y: ay },
         pixels[apos].rgb,
         tB,
         weights[bpos],
@@ -136,6 +136,7 @@ function processGenetic(
 
       const bOnAH = heuristic(
         { x: ax, y: ay },
+        { x: bx, y: by },
         pixels[bpos].rgb,
         tA,
         weights[apos],

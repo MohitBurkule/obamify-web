@@ -93,9 +93,7 @@ function rgbToBlob(rgb: Uint8Array, width: number, height: number): Promise<Blob
     const ctx = canvas.getContext('2d')!;
 
     const imageData = new ImageData(
-      new Uint8ClampedArray(Array.from(rgb).flatMap((v, i) => {
-        const idx = Math.floor(i / 3);
-        const pixelIdx = idx * 4;
+      new Uint8ClampedArray(Array.from(rgb).flatMap((_v, i) => {
         const channelIdx = i % 3;
         if (channelIdx === 0) return [rgb[i], 255];
         if (channelIdx === 1) return [rgb[i], 255];

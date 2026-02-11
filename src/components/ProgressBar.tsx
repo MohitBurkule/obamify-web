@@ -1,4 +1,3 @@
-import type { ProgressMsg } from '../types';
 
 interface ProgressBarProps {
   isOpen: boolean;
