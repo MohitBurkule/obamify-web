@@ -2,6 +2,7 @@ import { useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import type { SeedPos, SeedColor } from '../types';
 import { renderVoronoiOptimized } from '../rendering/voronoi';
 
+// Canvas component with ref forwarding
 interface MainCanvasProps {
   seeds: SeedPos[];
   colors: SeedColor[];
@@ -18,27 +19,8 @@ const MainCanvas = forwardRef<HTMLCanvasElement, MainCanvasProps>(
     // Expose ref to parent
     useImperativeHandle(ref, () => internalRef.current);
 
-interface MainCanvasProps {
-  seeds: SeedPos[];
-  colors: SeedColor[];
-  width: number;
-  height: number;
-  className?: string;
-  previewImage?: ImageData;
-}
-
-export function MainCanvas({
-  seeds,
-  colors,
-  width,
-  height,
-  className = '',
-  previewImage,
-}: MainCanvasProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
   useEffect(() => {
-    const canvas = canvasRef.current;
+    const canvas = internalRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
@@ -53,10 +35,12 @@ export function MainCanvas({
 
   return (
     <canvas
-      ref={canvasRef}
+      ref={internalRef}
       width={width}
       height={height}
       className={className}
     />
   );
-}
+});
+
+MainCanvas.displayName = 'MainCanvas';
