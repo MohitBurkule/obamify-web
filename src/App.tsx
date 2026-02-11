@@ -20,9 +20,8 @@ import { useGifRecorder } from './hooks/useGifRecorder';
 import { renderVoronoiOptimized } from './rendering/voronoi';
 
 // Worker type for algorithms
-interface AlgorithmWorker extends Worker {
-  onmessage: ((this: AlgorithmWorker, ev: MessageEvent<ProgressMsg>) => any) | null;
-  postMessage: (this: AlgorithmWorker, message: any, transfer?: any[]) => void;
+interface AlgorithmWorker {
+  postMessage: (message: any, transfer?: any[]) => void;
 }
 
 // Canvas component with ref forwarding
@@ -37,7 +36,7 @@ interface MainCanvasProps {
 
 const MainCanvas = forwardRef<HTMLCanvasElement, MainCanvasProps>(
   ({ seeds, colors, width, height, className = '', previewImage }, ref) => {
-    const internalRef = useRef<HTMLCanvasElement>(null);
+    const internalRef = useRef<HTMLCanvasElement | null>(null);
 
     // Expose ref to parent
     useImperativeHandle(ref, () => internalRef.current);

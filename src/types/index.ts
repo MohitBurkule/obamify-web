@@ -131,6 +131,6 @@ export const DRAWING_COLORS: [number, number, number, number][] = [
   [0, 0, 0, 0.5], // Black/Eraser
 ];
 
-export const DEFAULT_RESOLUTION = 256; // Good balance of performance & quality
+export const DEFAULT_RESOLUTION = 1024;
 export const DRAWING_CANVAS_SIZE = 128;
 export const SWAPS_PER_GENERATION_PER_PIXEL = 128;

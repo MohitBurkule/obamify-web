@@ -82,7 +82,7 @@ export function ConfigModal({ isOpen, onClose, onStart }: ConfigModalProps) {
       algorithm,
       sidelen: resolution,
       targetCropScale: cropScale,
-      sourceCropScale: { x: 0, y: 0, scale: 1 },
+      sourceCropScale: { x: 0, y: 0, scale: 1 }
     };
 
     onStart(settings, sourceImage);
